@@ -3,6 +3,7 @@ package com.fyndna.project.UserService.controller;
 import com.fyndna.project.UserService.exceptions.EmailIdAlreadyExistException;
 import com.fyndna.project.UserService.exceptions.EmailIdNotExistException;
 import com.fyndna.project.UserService.model.User;
+import com.fyndna.project.UserService.service.JwtUtil;
 import com.fyndna.project.UserService.service.UserServiceImpl;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -21,6 +22,7 @@ import java.util.List;
 public class UserController {
 
     private final UserServiceImpl userServiceImpl;
+    private final JwtUtil jwtUtil;
 
    private RestTemplate restTemplate;
 
@@ -46,7 +48,8 @@ public class UserController {
     public ResponseEntity<?> validateUser(@RequestBody User user) {
         boolean isValid = userServiceImpl.validateUser(user);
         if (isValid) {
-            return new ResponseEntity<>("Login Successful", HttpStatus.OK);
+            String token = jwtUtil.generateToken(user.getEmailId());
+            return new ResponseEntity<>("Bearer " + token, HttpStatus.OK);
         } else {
             return new ResponseEntity<>("Invalid Email or Password", HttpStatus.UNAUTHORIZED);
         }
