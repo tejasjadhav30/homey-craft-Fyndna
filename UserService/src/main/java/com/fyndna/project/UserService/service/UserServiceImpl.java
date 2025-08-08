@@ -56,18 +56,18 @@ public class UserServiceImpl implements UserService{
 
     @Override
     public User updateUser(String emailId, User user) throws EmailIdNotExistException {
-        Optional<User> existUser= userRepository.findUserByEmailId(emailId);
+        Optional<User> existUser= getUserByEmailId(emailId);
         if(existUser.isEmpty()){
             throw new EmailIdNotExistException("provided "+ user.getEmailId()+ " is not exist");
         }
-            User user1 = new User();
+            User user1 = existUser.get();
             user1.setMobileNumber(user.getMobileNumber());
             user1.setGender(user.getGender());
             user1.setPassword(user.getPassword());
             user1.setUsername(user.getUsername());
             user1.setEmailId(user.getEmailId());
             user1.setRole(user1.getRole());
-return userRepository.save(user1);
+            return userRepository.save(user1);
     }
 
     @Override
